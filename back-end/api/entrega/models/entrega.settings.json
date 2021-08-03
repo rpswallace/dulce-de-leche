@@ -1,0 +1,22 @@
+{
+  "kind": "collectionType",
+  "collectionName": "entregas",
+  "info": {
+    "name": "Delivery",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid"
+    }
+  }
+}

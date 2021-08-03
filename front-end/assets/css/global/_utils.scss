@@ -1,0 +1,70 @@
+.centered-container {
+  @include elastic-centering();
+  padding: 2rem;
+}
+
+ul {
+  li {
+    list-style: none;
+  }
+
+  &.list-group {
+    li {
+      margin: 5px;
+      font-size: 16px;
+
+      .badge:not(:last-child) {
+        margin-right: 10px;
+      }
+    }
+  }
+}
+
+.rbt-input-main {
+  margin: 30px;
+  font-size: 16px;
+  
+  &:first-child {
+    margin-bottom: 30px;
+  }
+}
+
+.toast {
+  font-size: 16px;
+  max-width: 100%;
+
+  .toast-header {
+    background-color: transparent;
+  }
+}
+
+.dropdown-menu {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown-item {
+  padding: 0;
+
+  &:focus,
+  &:hover {
+    background-color:#17a2b8;
+  }
+}
+
+
+.test {
+  display: flex;
+  width: 100%;
+
+  p {
+    text-align: center;
+    padding: 0 15px;
+  }
+
+  .title {
+    display: block;
+    font-weight: bold;
+  }
+}

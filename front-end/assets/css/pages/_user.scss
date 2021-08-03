@@ -1,0 +1,51 @@
+.brand-page {
+  .brand-details {
+    background-color: #fff;
+    display: flex;
+    padding: 4rem 0;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  h1 {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 700;
+    text-align: center;
+    font-size: 4rem;
+    margin: 0 0 2rem 0;
+    padding: 0;
+  }
+
+  img {
+    height: auto;
+    max-width: 35rem;
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  p {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 200;
+    text-align: center;
+    font-size: 1.8rem;
+    line-height: 2.4rem;
+    margin: 2rem auto;
+    max-width: 55rem;
+    width: 100%;
+  }
+
+  .btn {
+    background-color: #333;
+    color: #fff;
+    font-size: 1.5rem;
+    padding: 1rem;
+    max-width: 15rem;
+    text-align: center;
+    width: 100%;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}

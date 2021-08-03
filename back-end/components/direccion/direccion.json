@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_direccion_direccions",
+  "info": {
+    "name": "Address",
+    "icon": "address-card",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "details": {
+      "type": "richtext",
+      "required": true
+    },
+    "link": {
+      "type": "string"
+    }
+  }
+}

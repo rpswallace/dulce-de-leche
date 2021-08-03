@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_order_product_details_order_product_details",
+  "info": {
+    "name": "OrderProductDetails",
+    "icon": "clipboard-list",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "product": {
+      "model": "product"
+    },
+    "quantity": {
+      "type": "biginteger",
+      "required": true
+    },
+    "notes": {
+      "type": "richtext"
+    }
+  }
+}

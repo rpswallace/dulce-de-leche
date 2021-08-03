@@ -1,0 +1,35 @@
+@import '/assets/css/scss-utils/utils';
+
+.hero-wrapper {
+  background: $color-tasman url(https://picsum.photos/id/0/1200/800?grayscale);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  height: 40rem;
+
+  @include breakpoint(sm) {
+    height: 50rem;
+  }
+
+  @include breakpoint(md) {
+    height: 70rem;
+  }
+
+  .main {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    height: 100%;
+
+    h1 {
+      color: $color-black;
+      font-size: 6rem;
+      min-width: 25rem;
+      text-align: center;
+      padding: 2rem;
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+  }
+}

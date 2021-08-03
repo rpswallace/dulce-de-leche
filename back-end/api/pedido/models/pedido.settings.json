@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pedidos",
+  "info": {
+    "name": "Order",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "delivery_date": {
+      "type": "datetime"
+    },
+    "client_details": {
+      "type": "component",
+      "repeatable": false,
+      "component": "client.client"
+    },
+    "product_details": {
+      "type": "component",
+      "repeatable": true,
+      "component": "order-product-details.order-product-details"
+    },
+    "total": {
+      "type": "biginteger"
+    }
+  }
+}

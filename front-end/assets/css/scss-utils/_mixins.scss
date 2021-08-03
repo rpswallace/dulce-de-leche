@@ -1,0 +1,67 @@
+//
+// Media query manager: mobile first approach
+//
+// Note: in img queries rem & em units are not affected by a root font-size setting, i.e html { font-size: 60% }
+// they are affected by the default browser font 1em=16px if the default font is 16px
+// so em is the best unit for use on img queries
+//
+@mixin breakpoint($breakpoint) {
+  @if $breakpoint == xs {
+    @media only screen and (min-width: $screen-xs) {
+      // 576px
+      @content;
+    }
+  }
+  @if $breakpoint == sm {
+    @media only screen and (min-width: $screen-sm) {
+      // 768px
+      @content;
+    }
+  }
+  @if $breakpoint == md {
+    @media only screen and (min-width: $screen-md) {
+      // 992px
+      @content;
+    }
+  }
+  @if $breakpoint == lg {
+    @media only screen and (min-width: $screen-lg) {
+      // 1200px
+      @content;
+    }
+  }
+  @if $breakpoint == xl {
+    @media only screen and (min-width: $screen-xl) {
+      // 1400px
+      @content;
+    }
+  }
+}
+
+//
+// Let's use this mixin for content that needs to be centered on the screen
+// The max-width will be adjusted according the screen size
+@mixin elastic-centering() {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 var(--gap-sm);
+
+  @include breakpoint(xs) {
+    max-width: 57.6rem;
+  }
+  @include breakpoint(sm) {
+    max-width: 76.8rem;
+  }
+  @include breakpoint(md) {
+    max-width: 99.2rem;
+  }
+  @include breakpoint(lg) {
+    max-width: 120rem;
+  }
+}
+
+@mixin shrinkLabel {
+  top: -14px;
+  font-size: 12px;
+  color: $color-black;
+}

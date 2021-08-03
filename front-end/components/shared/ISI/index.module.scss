@@ -1,0 +1,32 @@
+@import '/assets/css/scss-utils/utils';
+
+.isi-wrapper {
+  .sticky-wrapper {
+    background-color: $color-white;
+    border-top: 1px solid $color-limed-spruce;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+
+    &.hide {
+      display: none;
+    }
+
+    h3 {
+      font-size: 2rem;
+    }
+
+    p {
+      font-size: 1.4rem;
+      line-height: 2rem;
+    }
+
+    button {
+      font-size: medium;
+      position: absolute;
+      right: 0;
+    }
+  }
+}

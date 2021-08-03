@@ -1,0 +1,14 @@
+{
+  "collectionName": "components_client_clients",
+  "info": {
+    "name": "Client",
+    "icon": "user-alt",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "client": {
+      "model": "clientes"
+    }
+  }
+}
