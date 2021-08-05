@@ -20,23 +20,21 @@ import API from '../../utils/api'
 
 
 const Orders = () => {
-  const [count, setCount] = useState(0);
+  const [isProductSearchDisabled, setIsProductSearchDisabled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [clientOptions, setClientOptions] = useState([]);
   const [productOptions, setProductOptions] = useState([]);
-  const [product, setProduct] = useState([]);
   const [client, setClient] = useState({});
   const [productDetails, setProductDetails] = useState({
     product: {},
     quantity: '',
-    notes: ''
+    notes: '',
+    total:  0
   });
   const [order, setOrder] = useState({
-    client_details: {
-      client: {
-      }
-    },
-    product_details: []
+    client_details: {},
+    product_details: [],
+    total: 0
   });
 
   const handleClientSearch = (query) => {
@@ -84,9 +82,40 @@ const Orders = () => {
   
   const addProduct = e => {
     e.preventDefault()
-    setProductDetails({...productDetails, product})
+    const temp = order.product_details;
+    temp.push(productDetails);
+    setOrder({...order, product_details: temp});
+    setProductDetails({
+      product: {},
+      quantity: '',
+      notes: '',
+      total: 0
+    })
+    getTotalOrder();
+  }
+  
+  const removeProduct = index => {
+    order.product_details.splice(index, 1);
+    setOrder({...order, product_details: order.product_details})
+    getTotalOrder();
+  }
+
+  const editProduct = e => {
+    e.preventDefault()
     order.product_details.push(productDetails)
-    setOrder(order);
+    setOrder({order});
+    // setIsProductSearchDisabled(false)
+  }
+
+  const getTotalOrder = () => {
+    if(order.product_details.length) {
+      const orderProductDetails = order.product_details;
+      const subtotal = orderProductDetails.map(item => parseInt(item.product.price) * parseInt(item.quantity))
+      const total = subtotal.reduce((accumulator, currentValue) => accumulator + currentValue)
+      setOrder({...order, total});
+    } else {
+      setOrder({...order, total: 0});
+    }
   }
 
   return (
@@ -103,7 +132,7 @@ const Orders = () => {
         onChange={(selected) => {
           if(selected.length) {
             setClient(selected[0]);
-            order.client_details.client = selected[0];
+            setOrder({...order, client: selected[0]})
             setOrder(order)
           }
         }}
@@ -111,17 +140,30 @@ const Orders = () => {
           <ClientSearchOptions data={selected} />
         )}
       />
-
       <List type="inline">
-        <ListInlineItem>{client.name} {client.firstName} {client.lastName} {client.phone} {client.email}</ListInlineItem>
-        <ListInlineItem>
-          <Link href={`https://api.whatsapp.com/send?phone=${client.phone}`}>
-            <a target="_blank" rel="noopener noreferrer">WhatsApp Me</a>
-          </Link>
+        <ListInlineItem className="test">
+          <p>
+            <span className="title">Client:</span>
+            {client.name} {client.firstName} {client.lastName}
+          </p>
+          <p>
+            <span className="title">Phone:</span>
+            {client.phone}
+          </p>
+          <p>
+            <span className="title">Phone:</span>
+            {client.email}
+          </p>
+          <p>
+            <span className="title">WhatsApp Me:</span>
+            <Link href={`https://api.whatsapp.com/send?phone=${client.phone}`}>
+              <a target="_blank" rel="noopener noreferrer">WhatsApp Me</a>
+            </Link>
+          </p>
         </ListInlineItem>
       </List>
-
       <AsyncTypeahead
+        disabled={isProductSearchDisabled}
         filterBy={filterBy}
         id="search-product"
         isLoading={isLoading}
@@ -132,13 +174,7 @@ const Orders = () => {
         placeholder="Search products..."
         onChange={(selected) => { 
           if(selected.length) {
-            // const found = product.find(product => product.id === selected[0].id)
-            // if(!found?.id) {
-              const temp = product;
-              temp.push(selected[0])
-              setProduct(temp)
-              setCount(count + 1)
-            // }    
+            setProductDetails({...productDetails, product: selected[0]})
           }
         }}
         renderMenuItemChildren={(selected) => (
@@ -156,49 +192,104 @@ const Orders = () => {
         )}
       />
       <List type="inline">
-      {
-        product.length ?
-          product.map((productItem, index) => {
-            return (
-              <ListInlineItem className="test" key={index}>
-                <FormInput
-                  name="quantity"
-                  type="number"
-                  label="Quantity"
-                  value={productDetails.quantity}
-                  handleChange={handleChange}
-                  required
-                />
-                <img src={ productItem.thumbnail }/> 
-                <p>
-                  <span className="title">UID</span>
-                  {productItem.id}
-                </p>
-                <p>
-                  <span className="title">Product</span>
-                  {productItem.name}
-                </p>
-                <p>
-                  <span className="title">Price</span>
-                  ₡ {productItem.price}
-                </p>
-                <FormInput
-                  name="notes"
-                  type="text"
-                  label="Notes"
-                  value={productDetails.notes}
-                  handleChange={handleChange}
-                  required
-                />
-                <a
-                onClick={addProduct}
-                >Add product</a>
-              </ListInlineItem> 
+        {
+          Object.keys(productDetails.product).length ?
+            (
+            <ListInlineItem className="test">
+              <FormInput
+                name="quantity"
+                type="number"
+                label="Quantity"
+                value={productDetails.quantity}
+                handleChange={handleChange}
+                required
+              />
+              <img src={ productDetails.product.thumbnail }/> 
+              <p>
+                <span className="title">UID</span>
+                { productDetails.product.id }
+              </p>
+              <p>
+                <span className="title">Product</span>
+                { productDetails.product.name }
+              </p>
+              <p>
+                <span className="title">Price</span>
+                ₡ { productDetails.product.price }
+              </p>
+              <FormInput
+                name="notes"
+                type="text"
+                label="Notes"
+                value={productDetails.notes}
+                handleChange={handleChange}
+                required
+              />
+              <a
+              onClick={addProduct}
+              >Add product</a>
+            </ListInlineItem> 
             )
-          })
-        : ''
-      }
+          : ''
+        }
       </List>
+      <hr/> 
+      <h2 className="text-center mb-5">Product List</h2>
+      <List type="inline">
+        {
+          order.product_details.length ?
+            order.product_details.map((productDetails, index) => {
+              return (
+                <ListInlineItem disabled className="test" key={index}>
+                  <FormInput
+                    name="quantity"
+                    type="number"
+                    label="Quantity"
+                    value={productDetails.quantity}
+                    handleChange={handleChange}
+                    required
+                    disabled={true}
+                  />
+                  <img src={ productDetails.product.thumbnail }/> 
+                  <p>
+                    <span className="title">UID</span>
+                    { productDetails.product.id }
+                  </p>
+                  <p>
+                    <span className="title">Product</span>
+                    { productDetails.product.name }
+                  </p>
+                  <p>
+                    <span className="title">Price</span>
+                    ₡ { productDetails.product.price }
+                  </p>
+                  <p>
+                    <span className="title">Total</span>
+                    ₡ { productDetails.product.price * productDetails.quantity }
+                  </p>
+                  <FormInput
+                    name="notes"
+                    type="text"
+                    label="Notes"
+                    value={productDetails.notes}
+                    handleChange={handleChange}
+                    required
+                    disabled={true}
+                  />
+                  <a
+                  onClick={editProduct}
+                  >Edit product</a> -  
+                  <a
+                  onClick={() => {removeProduct(index)}}
+                  >Remove product</a>
+                </ListInlineItem> 
+              )
+            })
+          : <p className="text-center">There are not products.</p>
+        }
+      </List>
+      <hr/>
+      <p className="total-order">Total order: <span>₡ {order.total}</span></p>
     </div>
   )
 }
