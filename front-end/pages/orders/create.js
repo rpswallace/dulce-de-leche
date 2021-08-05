@@ -140,28 +140,35 @@ const Orders = () => {
           <ClientSearchOptions data={selected} />
         )}
       />
-      <List type="inline">
-        <ListInlineItem className="test">
-          <p>
-            <span className="title">Client:</span>
-            {client.name} {client.firstName} {client.lastName}
-          </p>
-          <p>
-            <span className="title">Phone:</span>
-            {client.phone}
-          </p>
-          <p>
-            <span className="title">Phone:</span>
-            {client.email}
-          </p>
-          <p>
-            <span className="title">WhatsApp Me:</span>
-            <Link href={`https://api.whatsapp.com/send?phone=${client.phone}`}>
-              <a target="_blank" rel="noopener noreferrer">WhatsApp Me</a>
-            </Link>
-          </p>
-        </ListInlineItem>
-      </List>
+      {console.log(client?.name)}
+      {
+        client?.name ?
+        (
+          <List type="inline">
+            <ListInlineItem className="test">
+              <p>
+                <span className="title">Client:</span>
+                {client.name} {client.firstName} {client.lastName}
+              </p>
+              <p>
+                <span className="title">Phone:</span>
+                {client.phone}
+              </p>
+              <p>
+                <span className="title">Phone:</span>
+                {client.email}
+              </p>
+              <p>
+                <span className="title">WhatsApp Me:</span>
+                <Link href={`https://api.whatsapp.com/send?phone=${client.phone}`}>
+                  <a target="_blank" rel="noopener noreferrer">WhatsApp Me</a>
+                </Link>
+              </p>
+            </ListInlineItem>
+          </List>
+        )
+        : <p>Please select a client...</p>
+      }
       <AsyncTypeahead
         disabled={isProductSearchDisabled}
         filterBy={filterBy}
@@ -233,8 +240,10 @@ const Orders = () => {
           : ''
         }
       </List>
-      <hr/> 
-      <h2 className="text-center mb-5">Product List</h2>
+      <hr/>
+      {
+        order.product_details.length ? <h2 className="text-center mb-5">Product List</h2> : ''
+      }
       <List type="inline">
         {
           order.product_details.length ?
@@ -285,9 +294,12 @@ const Orders = () => {
                 </ListInlineItem> 
               )
             })
-          : <p className="text-center">There are not products.</p>
+          : ''
         }
       </List>
+      {
+        !order.product_details.length ? <p className="text-center">There are not products.</p> : ''
+      }
       <hr/>
       <p className="total-order">Total order: <span>₡ {order.total}</span></p>
     </div>
