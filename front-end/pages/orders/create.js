@@ -140,7 +140,6 @@ const Orders = () => {
           <ClientSearchOptions data={selected} />
         )}
       />
-      {console.log(client?.name)}
       {
         client?.name ?
         (
