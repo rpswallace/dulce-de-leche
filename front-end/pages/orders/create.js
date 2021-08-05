@@ -75,9 +75,15 @@ const Orders = () => {
   // filtered by the search endpoint, so no need to do it again.
   const filterBy = () => true;
 
-  const handleChange = e => {
+  const handleChange = (e, index) => {
     const {name, value} = e.target;
-    setProductDetails({...productDetails, [name]: value})
+    if(typeof index !== 'undefined') {
+      order.product_details[index].quantity = value;
+      setOrder({...order})
+      getTotalOrder();
+    } else {
+      setProductDetails({...productDetails, [name]: value})
+    }
   }
   
   const addProduct = e => {
@@ -100,10 +106,9 @@ const Orders = () => {
     getTotalOrder();
   }
 
-  const editProduct = e => {
-    e.preventDefault()
-    order.product_details.push(productDetails)
-    setOrder({order});
+  const editProduct = index => {
+    // const productSelected = order.product_details[index];
+    // console.log(productSelected);
     // setIsProductSearchDisabled(false)
   }
 
@@ -133,7 +138,6 @@ const Orders = () => {
           if(selected.length) {
             setClient(selected[0]);
             setOrder({...order, client: selected[0]})
-            setOrder(order)
           }
         }}
         renderMenuItemChildren={(selected) => (
@@ -248,15 +252,15 @@ const Orders = () => {
           order.product_details.length ?
             order.product_details.map((productDetails, index) => {
               return (
-                <ListInlineItem disabled className="test" key={index}>
+                <ListInlineItem className="test" key={index}>
                   <FormInput
                     name="quantity"
                     type="number"
                     label="Quantity"
                     value={productDetails.quantity}
-                    handleChange={handleChange}
+                    handleChange={() => handleChange(event, index)}
                     required
-                    disabled={true}
+                    // disabled={true}
                   />
                   <img src={ productDetails.product.thumbnail }/> 
                   <p>
@@ -285,7 +289,7 @@ const Orders = () => {
                     disabled={true}
                   />
                   <a
-                  onClick={editProduct}
+                  onClick={() => {editProduct(index)}}
                   >Edit product</a> -  
                   <a
                   onClick={() => {removeProduct(index)}}
