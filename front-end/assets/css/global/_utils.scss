@@ -85,3 +85,9 @@ hr {
     font-size: 30px;
   }
 }
+
+.actions {
+  &:not(:last-child) {
+    margin-right: 15px;
+  }
+}

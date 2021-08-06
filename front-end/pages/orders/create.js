@@ -1,7 +1,11 @@
-import { useState, useEffect, Fragment } from 'react'
+import { useState, Fragment } from 'react'
+
+// Utils
+import { applyCurrencyFormat } from '../../utils/utils';
 
 // NextJS
 import Link from 'next/link'
+import Image from 'next/image'
 
 // Custom Components
 import ClientSearchOptions from '../../components/shared/client-search-options/client-search-options';
@@ -29,7 +33,8 @@ const Orders = () => {
     product: {},
     quantity: '',
     notes: '',
-    total:  0
+    total:  0,
+    isDisabled: true
   });
   const [order, setOrder] = useState({
     client_details: {},
@@ -78,7 +83,7 @@ const Orders = () => {
   const handleChange = (e, index) => {
     const {name, value} = e.target;
     if(typeof index !== 'undefined') {
-      order.product_details[index].quantity = value;
+      order.product_details[index][name] = value;
       setOrder({...order})
       getTotalOrder();
     } else {
@@ -95,7 +100,8 @@ const Orders = () => {
       product: {},
       quantity: '',
       notes: '',
-      total: 0
+      total: 0,
+      isDisabled: true
     })
     getTotalOrder();
   }
@@ -105,11 +111,12 @@ const Orders = () => {
     setOrder({...order, product_details: order.product_details})
     getTotalOrder();
   }
-
-  const editProduct = index => {
-    // const productSelected = order.product_details[index];
-    // console.log(productSelected);
-    // setIsProductSearchDisabled(false)
+  
+  const updateProduct = index => {
+    const productSelected = order.product_details[index];
+    productSelected.isDisabled = !productSelected.isDisabled
+    order.product_details[index] = productSelected;
+    setOrder({...order})
   }
 
   const getTotalOrder = () => {
@@ -225,7 +232,7 @@ const Orders = () => {
               </p>
               <p>
                 <span className="title">Price</span>
-                ₡ { productDetails.product.price }
+                ₡ { applyCurrencyFormat(productDetails.product.price) }
               </p>
               <FormInput
                 name="notes"
@@ -260,7 +267,7 @@ const Orders = () => {
                     value={productDetails.quantity}
                     handleChange={() => handleChange(event, index)}
                     required
-                    // disabled={true}
+                    disabled={productDetails.isDisabled}
                   />
                   <img src={ productDetails.product.thumbnail }/> 
                   <p>
@@ -277,23 +284,50 @@ const Orders = () => {
                   </p>
                   <p>
                     <span className="title">Total</span>
-                    ₡ { productDetails.product.price * productDetails.quantity }
+                    ₡ { applyCurrencyFormat(productDetails.product.price * productDetails.quantity) }
                   </p>
                   <FormInput
                     name="notes"
                     type="text"
                     label="Notes"
                     value={productDetails.notes}
-                    handleChange={handleChange}
+                    handleChange={() => handleChange(event, index)}
                     required
-                    disabled={true}
+                    disabled={productDetails.isDisabled}
                   />
-                  <a
-                  onClick={() => {editProduct(index)}}
-                  >Edit product</a> -  
-                  <a
-                  onClick={() => {removeProduct(index)}}
-                  >Remove product</a>
+                  {
+                    productDetails.isDisabled ? 
+                    (
+                      <a className='actions' onClick={() => { updateProduct(index)} }>
+                        <Image
+                          src="/icons/edit.svg"
+                          // className={styles.shopping_icon}
+                          width={24}
+                          height={24}
+                        />
+                      </a>
+                    )
+                    : 
+                    (
+                      <a className='actions' onClick={() => { updateProduct(index)} }>
+                        <Image
+                          src="/icons/save.svg"
+                          // className={styles.shopping_icon}
+                          width={24}
+                          height={24}
+                        />
+                      </a>
+                    )
+                  }
+                  <a className='actions' onClick={() => { removeProduct(index)} }>
+                    <Image
+                      src="/icons/remove.svg"
+                      // className={styles.shopping_icon}
+                      width={24}
+                      height={24}
+                    />
+                  </a>
+
                 </ListInlineItem> 
               )
             })
@@ -304,7 +338,7 @@ const Orders = () => {
         !order.product_details.length ? <p className="text-center">There are not products.</p> : ''
       }
       <hr/>
-      <p className="total-order">Total order: <span>₡ {order.total}</span></p>
+      <p className="total-order">Total order: <span>₡ { applyCurrencyFormat(order.total) }</span></p>
     </div>
   )
 }
