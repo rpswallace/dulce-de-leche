@@ -1,47 +1,31 @@
-import { useState, Fragment } from 'react'
+import { useState } from 'react'
 
 // Utils
+import API from '../../utils/api'
 import { applyCurrencyFormat } from '../../utils/utils';
-
-// NextJS
-import Link from 'next/link'
-import Image from 'next/image'
+import { productDetailInit, orderDetailInit } from '../../utils/const';
 
 // Custom Components
 import ClientSearchOptions from '../../components/shared/client-search-options/client-search-options';
-import FormInput from '../../components/shared/form-input/form-input';
-
+import ClientPreview from '../../components/shared/client-preview/client-preview';
+import ProductList from '../../components/shared/product-list/product-list';
+import ProductOptions from '../../components/shared/product-options/product-options';
 
 // Libraries
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
-import { List, ListInlineItem } from 'reactstrap';
 
 // Styles
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
-// Utils
-import API from '../../utils/api'
-
-
 const Orders = () => {
-  const [isProductSearchDisabled, setIsProductSearchDisabled] = useState(false);
+  // States Section
   const [isLoading, setIsLoading] = useState(false);
   const [clientOptions, setClientOptions] = useState([]);
   const [productOptions, setProductOptions] = useState([]);
-  const [client, setClient] = useState({});
-  const [productDetails, setProductDetails] = useState({
-    product: {},
-    quantity: '',
-    notes: '',
-    total:  0,
-    isDisabled: true
-  });
-  const [order, setOrder] = useState({
-    client_details: {},
-    product_details: [],
-    total: 0
-  });
+  const [productDetails, setProductDetails] = useState(productDetailInit);
+  const [order, setOrder] = useState(orderDetailInit);
 
+  // Search a client using the Strapi API to create the options for the client autocomplete. 
   const handleClientSearch = (query) => {
     setIsLoading(true);
     const getClients = async () => {
@@ -60,6 +44,7 @@ const Orders = () => {
     getClients()
   };
   
+  // Search a product using the Strapi API to create the options for the product autocomplete. 
   const handleProductSearch = (query) => {
     setIsLoading(true);
     const getProducts = async () => {
@@ -80,260 +65,121 @@ const Orders = () => {
   // filtered by the search endpoint, so no need to do it again.
   const filterBy = () => true;
 
-  const handleChange = (e, index) => {
-    const {name, value} = e.target;
-    if(typeof index !== 'undefined') {
+  // Manage changes for inputs
+  const handleChange = (e, index, isProductPreview) => {
+    const { name, value } = e.target;
+    if(!isProductPreview) {
       order.product_details[index][name] = value;
-      setOrder({...order})
+      setOrder({ ...order });
       getTotalOrder();
     } else {
-      setProductDetails({...productDetails, [name]: value})
+      productDetails[index][name] = value;
+      setProductDetails([...productDetails]);
     }
   }
   
+  // Add product to an Order
   const addProduct = e => {
-    e.preventDefault()
+    e.preventDefault();
     const temp = order.product_details;
-    temp.push(productDetails);
-    setOrder({...order, product_details: temp});
-    setProductDetails({
-      product: {},
-      quantity: '',
-      notes: '',
-      total: 0,
-      isDisabled: true
-    })
+    temp.push(productDetails[0]);
+    setOrder({ ...order, product_details: temp });
+    setProductDetails(productDetailInit)
     getTotalOrder();
   }
   
+  // Remove product to an Order
   const removeProduct = index => {
     order.product_details.splice(index, 1);
-    setOrder({...order, product_details: order.product_details})
+    setOrder({ ...order, product_details: order.product_details });
     getTotalOrder();
   }
   
+  // Update product from an Order
   const updateProduct = index => {
     const productSelected = order.product_details[index];
-    productSelected.isDisabled = !productSelected.isDisabled
+    productSelected.isDisabled = !productSelected.isDisabled;
     order.product_details[index] = productSelected;
-    setOrder({...order})
+    setOrder({ ...order });
   }
 
+  // Get total price of the order
   const getTotalOrder = () => {
     if(order.product_details.length) {
       const orderProductDetails = order.product_details;
-      const subtotal = orderProductDetails.map(item => parseInt(item.product.price) * parseInt(item.quantity))
-      const total = subtotal.reduce((accumulator, currentValue) => accumulator + currentValue)
-      setOrder({...order, total});
+      const subtotal = orderProductDetails.map(item => parseInt(item.product.price) * parseInt(item.quantity));
+      const total = subtotal.reduce((accumulator, currentValue) => accumulator + currentValue);
+      setOrder({ ...order, total });
     } else {
-      setOrder({...order, total: 0});
+      setOrder({ ...order, total: 0 });
     }
   }
 
   return (
     <div>
       <AsyncTypeahead
-        filterBy={filterBy}
+        filterBy={ filterBy }
         id="search-client"
-        isLoading={isLoading}
+        isLoading={ isLoading }
         labelKey="name"
         minLength={3}
-        onSearch={handleClientSearch}
-        options={clientOptions}
+        onSearch={ handleClientSearch }
+        options={ clientOptions }
         placeholder="Search client..."
         onChange={(selected) => {
           if(selected.length) {
-            setClient(selected[0]);
-            setOrder({...order, client: selected[0]})
+            setOrder({ ...order, client: selected[0] })
           }
         }}
         renderMenuItemChildren={(selected) => (
-          <ClientSearchOptions data={selected} />
+          <ClientSearchOptions data={ selected } />
         )}
       />
       {
-        client?.name ?
-        (
-          <List type="inline">
-            <ListInlineItem className="test">
-              <p>
-                <span className="title">Client:</span>
-                {client.name} {client.firstName} {client.lastName}
-              </p>
-              <p>
-                <span className="title">Phone:</span>
-                {client.phone}
-              </p>
-              <p>
-                <span className="title">Phone:</span>
-                {client.email}
-              </p>
-              <p>
-                <span className="title">WhatsApp Me:</span>
-                <Link href={`https://api.whatsapp.com/send?phone=${client.phone}`}>
-                  <a target="_blank" rel="noopener noreferrer">WhatsApp Me</a>
-                </Link>
-              </p>
-            </ListInlineItem>
-          </List>
-        )
+        order.client?.name ?
+          <ClientPreview client={ order.client }/>
         : <p>Please select a client...</p>
       }
       <AsyncTypeahead
-        disabled={isProductSearchDisabled}
-        filterBy={filterBy}
+        filterBy={ filterBy }
         id="search-product"
-        isLoading={isLoading}
+        isLoading={ isLoading }
         labelKey="name"
         minLength={3}
-        onSearch={handleProductSearch}
-        options={productOptions}
+        onSearch={ handleProductSearch }
+        options={ productOptions }
         placeholder="Search products..."
         onChange={(selected) => { 
           if(selected.length) {
-            setProductDetails({...productDetails, product: selected[0]})
+            setProductDetails([{ ...productDetails, product: selected[0] }])
           }
         }}
         renderMenuItemChildren={(selected) => (
-          <Fragment>
-            <img
-              src={selected.thumbnail}
-              style={{
-                height: '70px',
-                marginRight: '10px',
-                width: '70px',
-              }}
-            />
-            <span>{selected.name}</span>
-          </Fragment>
+          <ProductOptions data={ selected }/>
         )}
       />
-      <List type="inline">
-        {
-          Object.keys(productDetails.product).length ?
-            (
-            <ListInlineItem className="test">
-              <FormInput
-                name="quantity"
-                type="number"
-                label="Quantity"
-                value={productDetails.quantity}
-                handleChange={handleChange}
-                required
-              />
-              <img src={ productDetails.product.thumbnail }/> 
-              <p>
-                <span className="title">UID</span>
-                { productDetails.product.id }
-              </p>
-              <p>
-                <span className="title">Product</span>
-                { productDetails.product.name }
-              </p>
-              <p>
-                <span className="title">Price</span>
-                ₡ { applyCurrencyFormat(productDetails.product.price) }
-              </p>
-              <FormInput
-                name="notes"
-                type="text"
-                label="Notes"
-                value={productDetails.notes}
-                handleChange={handleChange}
-                required
-              />
-              <a
-              onClick={addProduct}
-              >Add product</a>
-            </ListInlineItem> 
-            )
-          : ''
-        }
-      </List>
+      {
+        productDetails.length ?
+          <ProductList
+            productDetails={ productDetails }
+            eventsHandle={{ addProduct }}
+            handleChange={ handleChange }
+          />
+        : ''
+      }
       <hr/>
       {
         order.product_details.length ? <h2 className="text-center mb-5">Product List</h2> : ''
       }
-      <List type="inline">
-        {
-          order.product_details.length ?
-            order.product_details.map((productDetails, index) => {
-              return (
-                <ListInlineItem className="test" key={index}>
-                  <FormInput
-                    name="quantity"
-                    type="number"
-                    label="Quantity"
-                    value={productDetails.quantity}
-                    handleChange={() => handleChange(event, index)}
-                    required
-                    disabled={productDetails.isDisabled}
-                  />
-                  <img src={ productDetails.product.thumbnail }/> 
-                  <p>
-                    <span className="title">UID</span>
-                    { productDetails.product.id }
-                  </p>
-                  <p>
-                    <span className="title">Product</span>
-                    { productDetails.product.name }
-                  </p>
-                  <p>
-                    <span className="title">Price</span>
-                    ₡ { productDetails.product.price }
-                  </p>
-                  <p>
-                    <span className="title">Total</span>
-                    ₡ { applyCurrencyFormat(productDetails.product.price * productDetails.quantity) }
-                  </p>
-                  <FormInput
-                    name="notes"
-                    type="text"
-                    label="Notes"
-                    value={productDetails.notes}
-                    handleChange={() => handleChange(event, index)}
-                    required
-                    disabled={productDetails.isDisabled}
-                  />
-                  {
-                    productDetails.isDisabled ? 
-                    (
-                      <a className='actions' onClick={() => { updateProduct(index)} }>
-                        <Image
-                          src="/icons/edit.svg"
-                          // className={styles.shopping_icon}
-                          width={24}
-                          height={24}
-                        />
-                      </a>
-                    )
-                    : 
-                    (
-                      <a className='actions' onClick={() => { updateProduct(index)} }>
-                        <Image
-                          src="/icons/save.svg"
-                          // className={styles.shopping_icon}
-                          width={24}
-                          height={24}
-                        />
-                      </a>
-                    )
-                  }
-                  <a className='actions' onClick={() => { removeProduct(index)} }>
-                    <Image
-                      src="/icons/remove.svg"
-                      // className={styles.shopping_icon}
-                      width={24}
-                      height={24}
-                    />
-                  </a>
-
-                </ListInlineItem> 
-              )
-            })
-          : ''
-        }
-      </List>
+      {
+        order.product_details.length ?
+          <ProductList
+            productDetails={ order.product_details }
+            eventsHandle={{ updateProduct, removeProduct }}
+            handleChange={ handleChange }
+          />
+        : ''
+      }
       {
         !order.product_details.length ? <p className="text-center">There are not products.</p> : ''
       }
