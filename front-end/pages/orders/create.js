@@ -1,3 +1,6 @@
+import axios from 'axios';
+
+// React
 import { useState } from 'react'
 
 // Utils
@@ -13,6 +16,7 @@ import ProductOptions from '../../components/shared/product-options/product-opti
 
 // Libraries
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
+import { Input } from 'reactstrap';
 
 // Styles
 import 'react-bootstrap-typeahead/css/Typeahead.css';
@@ -76,6 +80,7 @@ const Orders = () => {
       productDetails[index][name] = value;
       setProductDetails([...productDetails]);
     }
+    console.log(order);
   }
   
   // Add product to an Order
@@ -115,8 +120,36 @@ const Orders = () => {
     }
   }
 
+  // 
+  const createOrder = () => {
+    const postOrder = async () => {
+      const response  = await API.postRequest('/pedidos', order)
+      if(response.status === 200) {
+        console.log(response.data);
+      }  else {
+        console.log(response.statusText);
+      }
+    }
+    postOrder() 
+  };
+
   return (
     <div>
+      <a
+      onClick={createOrder} 
+      >Create</a>
+
+      <Input
+        type="date"
+        name="date"
+        id="exampleDate"
+        placeholder="date placeholder"
+        onChange={(e) => {
+          console.log(e.target.value);
+          setOrder({ ...order, delivery_date: e.target.value})
+        }}
+      />
+      
       <AsyncTypeahead
         filterBy={ filterBy }
         id="search-client"

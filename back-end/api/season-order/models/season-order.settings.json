@@ -1,0 +1,66 @@
+{
+  "kind": "collectionType",
+  "collectionName": "season_orders",
+  "info": {
+    "name": "SeasonOrder",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "clientName": {
+      "type": "string",
+      "required": true
+    },
+    "clientPhone": {
+      "type": "string",
+      "required": true
+    },
+    "orderDate": {
+      "type": "string",
+      "required": true
+    },
+    "setLocation": {
+      "type": "string",
+      "required": true
+    },
+    "atStorePickUpNotes": {
+      "type": "richtext"
+    },
+    "address": {
+      "type": "component",
+      "repeatable": false,
+      "component": "address.address"
+    },
+    "isExpress": {
+      "type": "boolean",
+      "required": true
+    },
+    "isRecipient": {
+      "type": "boolean",
+      "required": false
+    },
+    "pickUpOptions": {
+      "type": "string",
+      "required": true
+    },
+    "product_details": {
+      "type": "component",
+      "repeatable": true,
+      "component": "order-product-details.order-product-details",
+      "required": true
+    },
+    "total": {
+      "type": "biginteger"
+    },
+    "status": {
+      "type": "integer",
+      "default": 0,
+      "required": true
+    }
+  }
+}

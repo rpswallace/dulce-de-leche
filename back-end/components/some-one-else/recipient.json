@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_some_one_else_recipients",
+  "info": {
+    "name": "Recipient",
+    "icon": "hospital",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "recipientName": {
+      "type": "string",
+      "required": false
+    },
+    "atHomePickUp": {
+      "type": "richtext"
+    },
+    "isGift": {
+      "type": "boolean",
+      "required": false
+    },
+    "recipientPhone": {
+      "type": "string",
+      "required": false
+    }
+  }
+}

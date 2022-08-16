@@ -7,15 +7,23 @@
   },
   "options": {},
   "attributes": {
-    "product": {
-      "model": "product"
-    },
     "quantity": {
       "type": "biginteger",
       "required": true
     },
     "notes": {
       "type": "richtext"
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "isBox": {
+      "type": "boolean"
+    },
+    "price": {
+      "type": "biginteger",
+      "required": true
     }
   }
 }

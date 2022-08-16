@@ -27,7 +27,7 @@ export default function Brand({ user }) {
     <Main className='user-page'>
       <HeadMetadata seotags={SEO_TAGS} />
       <main className='centered-container'>
-        <UserInfo user={user} />
+        
       </main>
     </Main>
   )
@@ -50,12 +50,12 @@ export async function getStaticPaths() {
 }
 
 // This also gets called at build time
-export async function getStaticProps({ params }) {
-  // params contains the brand `id`.
-  // If the route is like /brand/nike, then params.id is nike
-  const res = await API.getRequest(`/users/${params.id}`)
-  const user = res.data
+// export async function getStaticProps({ params }) {
+//   // params contains the brand `id`.
+//   // If the route is like /brand/nike, then params.id is nike
+//   const res = await API.getRequest(`/users/${params.id}`)
+//   const user = res.data
 
-  // Pass post data to the page via props
-  return { props: { user } }
-}
+//   // Pass post data to the page via props
+//   return { props: { user } }
+// }

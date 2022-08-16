@@ -1,0 +1,35 @@
+{
+  "collectionName": "components_address_addresses",
+  "info": {
+    "name": "address",
+    "icon": "car-side",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "provincia": {
+      "type": "string",
+      "required": false
+    },
+    "canton": {
+      "type": "string",
+      "required": false
+    },
+    "distrito": {
+      "type": "string",
+      "required": false
+    },
+    "fullAddress": {
+      "type": "richtext",
+      "required": false
+    },
+    "locationLink": {
+      "type": "string"
+    },
+    "recipient": {
+      "type": "component",
+      "repeatable": false,
+      "component": "some-one-else.recipient"
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/season-orders",
+      "handler": "season-order.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/season-orders/count",
+      "handler": "season-order.count",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/season-orders/:id",
+      "handler": "season-order.findOne",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/season-orders",
+      "handler": "season-order.create",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/season-orders/:id",
+      "handler": "season-order.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/season-orders/:id",
+      "handler": "season-order.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

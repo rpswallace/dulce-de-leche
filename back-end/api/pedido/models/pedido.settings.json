@@ -13,20 +13,24 @@
   "pluginOptions": {},
   "attributes": {
     "delivery_date": {
-      "type": "datetime"
+      "type": "datetime",
+      "required": true
     },
     "client_details": {
       "type": "component",
       "repeatable": false,
-      "component": "client.client"
+      "component": "client.client",
+      "required": true
     },
     "product_details": {
       "type": "component",
       "repeatable": true,
-      "component": "order-product-details.order-product-details"
+      "component": "order-product-details.order-product-details",
+      "required": true
     },
     "total": {
-      "type": "biginteger"
+      "type": "biginteger",
+      "required": true
     }
   }
 }

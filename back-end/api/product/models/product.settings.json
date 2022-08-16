@@ -40,6 +40,9 @@
     },
     "packing": {
       "model": "category"
+    },
+    "pricePerQuantity": {
+      "type": "biginteger"
     }
   }
 }
