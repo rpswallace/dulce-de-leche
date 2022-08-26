@@ -15,4 +15,4 @@ const parse = require('pg-connection-string').parse;
         },
         debug: false,
       },
-    })
+    });
